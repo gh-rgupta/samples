@@ -1,3 +1,4 @@
+import os
 from strands import Agent, tool
 from strands.models import BedrockModel
 from constants import SESSION_ID
@@ -5,8 +6,10 @@ from dummy_data_subagents import COMPLETE_VEEVA_DATA
 import json
 from datetime import datetime
 
+aws_account_id = os.environ["AWS_ACCOUNT_ID"]
+
 model = BedrockModel(
-    model_id="arn:aws:bedrock:us-west-2:558178433193:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+    model_id=f"arn:aws:bedrock:us-west-2:{aws_account_id}:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
 )
 
 def query_veeva_data(query: str):

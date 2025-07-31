@@ -10,8 +10,10 @@ from constants import SESSION_ID
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
 
+aws_account_id = os.environ["AWS_ACCOUNT_ID"]
+
 model = BedrockModel(
-    model_id="arn:aws:bedrock:us-west-2:558178433193:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+    model_id=f"arn:aws:bedrock:us-west-2:{aws_account_id}:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
 )
 
 system_prompt = """You are a Concierge Sales Assistant for sales representatives at Guardant Health. You intelligently classify queries and route them to the appropriate specialized agents.
