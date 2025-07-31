@@ -3,20 +3,20 @@ from strands import Agent
 from strands.models import BedrockModel
 from code_assistant import code_assistant
 from calendar_assistant import calendar_assistant
-from search_assistant import search_assistant
+# from search_assistant import search_assistant
 from constants import SESSION_ID
 
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
 
 model = BedrockModel(
-    model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
+    model_id="arn:aws:bedrock:us-west-2:558178433193:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
 )
 
 personal_assistant_agent = Agent(
     model=model,
     system_prompt="You are a personal assistant. Use the agents and tools at your disposal to assist the user.",
-    tools=[code_assistant, calendar_assistant, search_assistant],
+    tools=[code_assistant, calendar_assistant],#, search_assistant],
     trace_attributes={"session.id": SESSION_ID},
 )
 
