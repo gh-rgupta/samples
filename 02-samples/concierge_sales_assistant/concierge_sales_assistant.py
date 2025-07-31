@@ -6,9 +6,16 @@ from tableau_agent import tableau_assistant
 from training_agent import training_assistant
 from veeva_agent import veeva_assistant
 from constants import SESSION_ID
+from langfuse_config import setup_langfuse_env, get_coordinator_trace_attributes
 
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
+
+# Setup Langfuse observability
+print("🔧 Configuring Langfuse observability...")
+setup_langfuse_env()
+print("✅ Langfuse configuration complete!")
+print()
 
 aws_account_id = os.environ["AWS_ACCOUNT_ID"]
 
@@ -56,7 +63,7 @@ concierge_sales_agent = Agent(
     model=model,
     system_prompt=system_prompt,
     tools=[salesforce_assistant, tableau_assistant, training_assistant, veeva_assistant],
-    trace_attributes={"session.id": SESSION_ID},
+    trace_attributes=get_coordinator_trace_attributes(SESSION_ID),
 )
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ from strands import Agent, tool
 from strands.models import BedrockModel
 from constants import SESSION_ID
 from dummy_data_subagents import COMPLETE_SALESFORCE_DATA
+from langfuse_config import get_subagent_trace_attributes
 import json
 from datetime import datetime, timedelta
 
@@ -74,7 +75,7 @@ salesforce_agent = Agent(
     system_prompt="""You are a Salesforce specialist assistant with access to real CRM data including orders, cases, samples, and Stark compliance information. 
     Analyze the provided data and give specific, actionable responses. Format your responses clearly with relevant details like order IDs, dates, amounts, and status information.
     When presenting data, use clear formatting and highlight important information like high-risk Stark compliance or urgent cases.""",
-    trace_attributes={"session.id": SESSION_ID},
+    trace_attributes=get_subagent_trace_attributes("salesforce", SESSION_ID),
 )
 
 @tool

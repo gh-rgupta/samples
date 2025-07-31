@@ -3,6 +3,7 @@ from strands import Agent, tool
 from strands.models import BedrockModel
 from constants import SESSION_ID
 from dummy_data_subagents import COMPLETE_TABLEAU_DATA
+from langfuse_config import get_subagent_trace_attributes
 import json
 
 aws_account_id = os.environ["AWS_ACCOUNT_ID"]
@@ -94,7 +95,7 @@ tableau_agent = Agent(
     system_prompt="""You are a Tableau analytics specialist assistant with access to real sales performance data, quotas, territory metrics, and engagement analytics.
     Analyze the provided data and give specific, actionable insights. Format your responses clearly with relevant metrics, percentages, and trends.
     When presenting analytics, highlight key performance indicators, trends, and actionable recommendations for sales improvement.""",
-    trace_attributes={"session.id": SESSION_ID},
+    trace_attributes=get_subagent_trace_attributes("tableau", SESSION_ID),
 )
 
 @tool

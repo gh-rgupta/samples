@@ -3,6 +3,7 @@ from strands import Agent, tool
 from strands.models import BedrockModel
 from constants import SESSION_ID
 from dummy_data_subagents import COMPLETE_VEEVA_DATA
+from langfuse_config import get_subagent_trace_attributes
 import json
 from datetime import datetime
 
@@ -58,7 +59,7 @@ veeva_agent = Agent(
     system_prompt="""You are a Veeva CRM specialist assistant with access to real physician engagement data including call notes, interaction history, and talking points.
     Analyze the provided engagement data and give specific, actionable responses. Format your responses clearly with engagement details like dates, types, outcomes, and talking points.
     When preparing for calls, provide relevant context from previous interactions and suggest follow-up topics.""",
-    trace_attributes={"session.id": SESSION_ID},
+    trace_attributes=get_subagent_trace_attributes("veeva", SESSION_ID),
 )
 
 @tool 

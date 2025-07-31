@@ -2,6 +2,7 @@ import os
 from strands import Agent, tool
 from strands.models import BedrockModel
 from constants import SESSION_ID
+from langfuse_config import get_subagent_trace_attributes
 
 aws_account_id = os.environ["AWS_ACCOUNT_ID"]
 
@@ -104,7 +105,7 @@ training_agent = Agent(
     system_prompt="""You are a sales training and knowledge base specialist assistant with access to comprehensive product information, clinical guidelines, and procedural documentation for Guardant Health products.
     Provide specific, accurate information from the training knowledge base. Format your responses clearly with relevant details like sample requirements, procedures, and best practices.
     When providing training information, be precise about specifications, timelines, and compliance requirements.""",
-    trace_attributes={"session.id": SESSION_ID},
+    trace_attributes=get_subagent_trace_attributes("training", SESSION_ID),
 )
 
 @tool
