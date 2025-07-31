@@ -33,4 +33,4 @@ USER appuser
 EXPOSE 8000
 
 # Default command to run the main application
-CMD ["python", "-u", "concierge_sales_assistant.py"]
+# CMD ["python", "-u", "concierge_sales_assistant.py"]
