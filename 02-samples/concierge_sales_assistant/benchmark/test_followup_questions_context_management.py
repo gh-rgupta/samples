@@ -8,7 +8,6 @@ sequence_1_questions = [
     "Can you compare above two tests",
     "Can you add tissue to that comparison",
     "What is standard turnaround time for above tests",
-    "What is standard turnaround time for these tests",
     "How much such tests Dr. Shafique ordered",
     "Which account has more than 2 such orders cancelled last quarter",
     "Show me test ordering trend of these tests"

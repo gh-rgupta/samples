@@ -1,15 +1,81 @@
 import os
+import time
 from strands import Agent
 from strands.models import BedrockModel
-from salesforce_agent import salesforce_assistant
-from tableau_agent import tableau_assistant  
-from training_agent import training_assistant
-from veeva_agent import veeva_assistant
+from salesforce_agent import salesforce_assistant as _salesforce_assistant
+from tableau_agent import tableau_assistant as _tableau_assistant  
+from training_agent import training_assistant as _training_assistant
+from veeva_agent import veeva_assistant as _veeva_assistant
+from strands import tool
 from constants import SESSION_ID
 from langfuse_config import setup_langfuse_env, get_coordinator_trace_attributes
 
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
+
+# Global variable to store agent execution times
+agent_execution_times = {}
+
+# Timing wrapper functions for each agent
+@tool
+def salesforce_assistant(query: str) -> str:
+    """Handle Salesforce-related queries about cases, samples, accounts, territories, and support tickets."""
+    start_time = time.time()
+    print(f"⏱️  [TIMING] Salesforce Agent - Starting query execution...")
+    
+    result = _salesforce_assistant(query)
+    
+    end_time = time.time()
+    execution_time = end_time - start_time
+    agent_execution_times['salesforce'] = execution_time
+    print(f"⏱️  [TIMING] Salesforce Agent - Completed in {execution_time:.2f} seconds")
+    
+    return result
+
+@tool
+def tableau_assistant(query: str) -> str:
+    """Handle Tableau-related queries about analytics, quotas, performance metrics, and revenue tracking."""
+    start_time = time.time()
+    print(f"⏱️  [TIMING] Tableau Agent - Starting query execution...")
+    
+    result = _tableau_assistant(query)
+    
+    end_time = time.time()
+    execution_time = end_time - start_time
+    agent_execution_times['tableau'] = execution_time
+    print(f"⏱️  [TIMING] Tableau Agent - Completed in {execution_time:.2f} seconds")
+    
+    return result
+
+@tool
+def training_assistant(query: str) -> str:
+    """Handle training-related queries about product specs, procedures, guidelines, and best practices."""
+    start_time = time.time()
+    print(f"⏱️  [TIMING] Training Agent - Starting query execution...")
+    
+    result = _training_assistant(query)
+    
+    end_time = time.time()
+    execution_time = end_time - start_time
+    agent_execution_times['training'] = execution_time
+    print(f"⏱️  [TIMING] Training Agent - Completed in {execution_time:.2f} seconds")
+    
+    return result
+
+@tool
+def veeva_assistant(query: str) -> str:
+    """Handle Veeva-related queries about physician engagements, call notes, and interaction history."""
+    start_time = time.time()
+    print(f"⏱️  [TIMING] Veeva Agent - Starting query execution...")
+    
+    result = _veeva_assistant(query)
+    
+    end_time = time.time()
+    execution_time = end_time - start_time
+    agent_execution_times['veeva'] = execution_time
+    print(f"⏱️  [TIMING] Veeva Agent - Completed in {execution_time:.2f} seconds")
+    
+    return result
 
 # Setup Langfuse observability
 print("🔧 Configuring Langfuse observability...")
@@ -51,13 +117,21 @@ Query: "Who are my top 5 contacts with highest engagements and what tests do the
 Query: "What should I know before my call with Dr. Shafique?"
 → Call salesforce_assistant() for case updates + veeva_assistant() for past engagements + training_assistant() for relevant materials
 
+**RESPONSE STYLE:**
+- Keep responses SHORT and CONCISE
+- Use bullet points and structured format
+- Avoid lengthy explanations
+- Focus on actionable information
+- Maximum 3-4 sentences per point
+- Use clear, direct language
+
 **YOUR APPROACH:**
 1. Analyze the query to identify which categories apply
 2. Call the appropriate assistant tool(s)
-3. If multiple tools are used, synthesize the responses into a coherent answer
-4. Always be helpful and comprehensive in your responses
+3. If multiple tools are used, synthesize the responses into a brief, structured answer
+4. Provide concise, actionable information without unnecessary detail
 
-You are the intelligent coordinator that ensures sales reps get complete, accurate information from all relevant systems."""
+You are the intelligent coordinator that ensures sales reps get complete, accurate information from all relevant systems in a brief, digestible format."""
 
 concierge_sales_agent = Agent(
     model=model,
@@ -113,9 +187,41 @@ if __name__ == "__main__":
                 print("=========================================================")
                 break
 
+            # Reset agent execution times for new query
+            agent_execution_times.clear()
+            
+            # Start total query timing
+            total_start_time = time.time()
+            print("⏱️  [TIMING] Total Query - Starting execution...")
+            print()
+            
             print("🤖 ConciergeBot: ", end="")
             response = concierge_sales_agent(user_input)
-            print("\n")
+            
+            # End total query timing
+            total_end_time = time.time()
+            total_execution_time = total_end_time - total_start_time
+            
+            print()
+            print("=" * 60)
+            print("⏱️  [TIMING SUMMARY]")
+            print("=" * 60)
+            
+            # Show individual agent times
+            if agent_execution_times:
+                for agent_name, execution_time in agent_execution_times.items():
+                    print(f"   📊 {agent_name.capitalize()} Agent: {execution_time:.2f} seconds")
+                print("   " + "-" * 40)
+                sub_agent_total = sum(agent_execution_times.values())
+                print(f"   📊 Sub-agents Total: {sub_agent_total:.2f} seconds")
+                coordinator_time = total_execution_time - sub_agent_total
+                print(f"   🤖 Coordinator Overhead: {coordinator_time:.2f} seconds")
+            else:
+                print("   📊 No sub-agents were called for this query")
+            
+            print(f"   ⏱️  Total Query Time: {total_execution_time:.2f} seconds")
+            print("=" * 60)
+            print()
 
         except KeyboardInterrupt:
             print("\n")

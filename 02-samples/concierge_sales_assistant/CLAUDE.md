@@ -70,6 +70,27 @@ All agents use AWS Bedrock with Claude Sonnet 4 via specific inference profile A
 
 ## Key Features
 
+### Query Timing and Performance Monitoring
+The system includes comprehensive timing functionality to track performance:
+- **Individual Agent Timing**: Each sub-agent execution is timed and reported
+- **Total Query Timing**: Complete end-to-end query processing time
+- **Coordinator Overhead**: Time spent in routing and coordination logic
+- **Timing Summary**: Detailed breakdown displayed after each query with visual timing summary
+
+Example timing output:
+```
+============================================================
+⏱️  [TIMING SUMMARY]
+============================================================
+   📊 Salesforce Agent: 1.23 seconds
+   📊 Training Agent: 0.87 seconds
+   ----------------------------------------
+   📊 Sub-agents Total: 2.10 seconds
+   🤖 Coordinator Overhead: 0.15 seconds
+   ⏱️  Total Query Time: 2.25 seconds
+============================================================
+```
+
 ### Automatic Query Classification
 The system automatically determines query categories without requiring explicit classification:
 - **Single domain**: "Show me open cases" → Routes to Salesforce Agent
